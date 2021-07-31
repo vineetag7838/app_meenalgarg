@@ -62,11 +62,7 @@ pipeline{
 					-Dsonar.projectKey=sonar_meenalgarg2610 \
 					-Dsonar.host.url=http://localhost:9000 \
 					-Dsonar.java.binaries=target/classes \
-                    -Dsonar.jacoco.reportPath=target/jacoco-it.exec \
-                    -Dsonar.java.coveragePlugin=jacoco \
-                    -Dsonar.junit.reportsPath=target/surefire-reports \
-                    -Dsonar.surefire.reportsPath=target/surefire-reports \
-                    -Dsonar.language=java"
+                    -Dsonar.junit.reportsPath=target/surefire-reports "
                 }
                 sleep 10
                 echo 'checking if sonar quality gate passed'
