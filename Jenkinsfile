@@ -137,11 +137,20 @@ pipeline{
         }
 		
 		stage('Docker deployment'){
+            echo 'docker deployment step'
+            when{
+                branch 'master'
+            }
 			steps{
-				echo 'docker deployment step'
 				bat "docker run --name c-${username}-master -d -p 7200:8100 ${username}/i-${username}-master:latest"
-                bat "docker run --name c-${username}-develop -d -p 7300:8100 ${username}/i-${username}-develop:latest"
 			}
+
+            when{
+                branch 'develop'
+            }
+            steps{
+                bat "docker run --name c-${username}-develop -d -p 7300:8100 ${username}/i-${username}-develop:latest"
+            }
 		}
 		
         //stage('Local Kubernetes Deployment'){
