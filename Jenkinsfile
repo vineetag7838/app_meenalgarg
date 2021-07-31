@@ -31,7 +31,7 @@ pipeline{
         stage('Build'){
             steps{
                 echo 'checkout code'
-                echo 'pulling branch: -'+ env.BRANCH_NAME
+                echo 'pulling branch: -'+ BRANCH_NAME
                 git poll:true, url: 'https://github.com/mgarg-03-05/app_meenalgarg.git'
 
                 echo 'maven build'
@@ -90,19 +90,19 @@ pipeline{
                 stage('Publish image to Docker hub'){
                     steps{
                         echo 'push image to docker hub step'
-                        bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-master:${BUILD_NUMBER}"
-				        bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-master:latest"
+                        bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-${env.BRANCH_NAME}:${BUILD_NUMBER}"
+				        bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-${env.BRANCH_NAME}:latest"
 
-                        bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-develop:${BUILD_NUMBER}"
-				        bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-develop:latest"
+                        // bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-develop:${BUILD_NUMBER}"
+				        // bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-develop:latest"
                 
                         
                         withDockerRegistry(credentialsId: 'DockerHub', url: ''){
-                        bat "docker push ${username}/i-${username}-master:${BUILD_NUMBER}"
-				        bat "docker push ${username}/i-${username}-master:latest"
+                        bat "docker push ${username}/i-${username}-${env.BRANCH_NAME}:${BUILD_NUMBER}"
+				        bat "docker push ${username}/i-${username}-${env.BRANCH_NAME}:latest"
 
-                        bat "docker push ${username}/i-${username}-develop:${BUILD_NUMBER}"
-				        bat "docker push ${username}/i-${username}-develop:latest"
+                        // bat "docker push ${username}/i-${username}-develop:${BUILD_NUMBER}"
+				        // bat "docker push ${username}/i-${username}-develop:latest"
                         }
                     }
                 }
@@ -111,26 +111,26 @@ pipeline{
 				        echo 'Remove already running docker container'
 				        script{
                             try{
-                                echo 'stopping already running master container'
-                                bat "docker stop c-${username}-master"
+                                echo 'stopping already running container'
+                                bat "docker stop c-${username}-${env.BRANCH_NAME}"
 
-                                echo 'removing the old master container'
-                                bat "docker container rm c-${username}-master"
+                                echo 'removing the old container'
+                                bat "docker container rm c-${username}-${env.BRANCH_NAME}"
                             }catch(Exception e){
                                 // Nothing to be done here, added only to prevent the failure of pipeline 
                                 //because when pipeline will run for the first time, 
                                 //there won't be any container to remove
                             }
 
-                            try{
-                                echo 'stopping already running develop container'
-                                bat "docker stop c-${username}-develop"
+                            // try{
+                            //     echo 'stopping already running develop container'
+                            //     bat "docker stop c-${username}-develop"
 
-                                echo 'removing the old develop container'
-                                bat "docker container rm c-${username}-develop"
-                            }catch(Exception e){
-                                //nothing to be done here
-                            }
+                            //     echo 'removing the old develop container'
+                            //     bat "docker container rm c-${username}-develop"
+                            // }catch(Exception e){
+                            //     //nothing to be done here
+                            // }
                         }
 			        }
                 }
@@ -140,8 +140,12 @@ pipeline{
 		stage('Docker deployment'){
 			steps{
 				echo 'docker deployment step'
-				bat "docker run --name c-${username}-master -d -p 7200:8100 ${username}/i-${username}-master:latest"
-                bat "docker run --name c-${username}-develop -d -p 7300:8100 ${username}/i-${username}-develop:latest"
+                if(${env.BRANCH_NAME} == 'master'){
+                    bat "docker run --name c-${username}-master -d -p 7200:8100 ${username}/i-${username}-master:latest"
+                }
+                if(${env.BRANCH_NAME} == 'develop'){
+                    bat "docker run --name c-${username}-develop -d -p 7300:8100 ${username}/i-${username}-develop:latest"
+                }
 			}
 		}
 		
