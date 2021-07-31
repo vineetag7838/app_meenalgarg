@@ -61,8 +61,7 @@ pipeline{
 					bat "mvn clean verify sonar:sonar \
 					-Dsonar.projectKey=sonar_meenalgarg2610 \
 					-Dsonar.host.url=http://localhost:9000 \
-					-Dsonar.java.binaries=target/classes \
-                    -Dsonar.junit.reportsPath=target/surefire-reports "
+					-Dsonar.java.binaries=target/classes "
                 }
                 sleep 10
                 echo 'checking if sonar quality gate passed'
