@@ -62,7 +62,7 @@ pipeline{
 					-Dsonar.projectKey=sonar_meenalgarg2610 \
 					-Dsonar.host.url=http://localhost:9000 \
 					-Dsonar.java.binaries=target/classes \
-                    -Dsonar.coverage.jacoco.xmlReportPaths=${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+                    -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml"
                 }
                 sleep 10
                 echo 'checking if sonar quality gate passed'
