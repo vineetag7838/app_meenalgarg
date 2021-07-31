@@ -133,8 +133,8 @@ pipeline{
 		stage('Docker deployment'){
 			steps{
 				echo 'docker deployment step'
-				bat "docker run --name c-${username}-master -d -p 7200:8100 ${docker_registry}-master:latest"
-                bat "docker run --name c-${username}-develop -d -p 7300:8100 ${docker_registry}-develop:latest"
+				bat "docker run --name c-${username}-master -d -p 7200:8100 ${username}/i-${username}-master:latest"
+                bat "docker run --name c-${username}-develop -d -p 7300:8100 ${username}/i-${username}-develop:latest"
 			}
 		}
 		
