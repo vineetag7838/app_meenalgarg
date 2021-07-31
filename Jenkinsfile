@@ -141,10 +141,10 @@ pipeline{
 			steps{
 				echo 'docker deployment step'
                 script{
-                    if(${env.BRANCH_NAME} == 'master'){
+                    if(env.BRANCH_NAME == 'master'){
                         bat "docker run --name c-${username}-master -d -p 7200:8100 ${username}/i-${username}-master:latest"
                     }
-                    if(${env.BRANCH_NAME} == 'develop'){
+                    if(env.BRANCH_NAME == 'develop'){
                         bat "docker run --name c-${username}-develop -d -p 7300:8100 ${username}/i-${username}-develop:latest"
                     }
                 }
