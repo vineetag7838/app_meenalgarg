@@ -110,19 +110,25 @@ pipeline{
 				        echo 'Remove already running docker container'
 				        script{
                             try{
-                                // stop already running container
-                                echo 'stopping already running containers'
+                                echo 'stopping already running master container'
                                 bat "docker stop c-${username}-master"
-                                bat "docker stop c-${username}-develop"
 
-                                // remove the old container
-                                echo 'removing the old containers'
+                                echo 'removing the old master container'
                                 bat "docker container rm c-${username}-master"
-                                bat "docker container rm c-${username}-develop"
                             }catch(Exception e){
                                 // Nothing to be done here, added only to prevent the failure of pipeline 
                                 //because when pipeline will run for the first time, 
                                 //there won't be any container to remove
+                            }
+
+                            try{
+                                echo 'stopping already running develop container'
+                                bat "docker stop c-${username}-develop"
+
+                                echo 'removing the old develop container'
+                                bat "docker container rm c-${username}-develop"
+                            }catch(Exception e){
+                                //nothing to be done here
                             }
                         }
 			        }
