@@ -58,10 +58,11 @@ pipeline{
                 
                 //Test_Sonar - name of configuration in jenkins
                 withSonarQubeEnv('Test_Sonar') {
-					bat "${scannerHome}/bin/sonar-scanner \
+					bat "mvn clean package sonar:sonar \
 					-Dsonar.projectKey=sonar_meenalgarg2610 \
 					-Dsonar.host.url=http://localhost:9000 \
-					-Dsonar.java.binaries=target/classes"
+					-Dsonar.java.binaries=target/classes \
+                    -Dsonar.coverage.jacoco.xmlReportPaths=${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
                 }
                 sleep 10
                 echo 'checking if sonar quality gate passed'

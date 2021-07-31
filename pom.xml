@@ -11,7 +11,7 @@
 	<groupId>com.jenkins.multibranch</groupId>
 	<artifactId>jenkins-multibranch</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>jenkins-multibranch</name>
+	<name>app_meenalgarg</name>
 	<description>jenkins multibranch demo project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
@@ -41,7 +41,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<!-- <plugin>
+			<plugin>
           		<groupId>org.jacoco</groupId>
           		<artifactId>jacoco-maven-plugin</artifactId>
           		<configuration>
@@ -61,7 +61,7 @@
                   		</goals>
               		</execution>
           		</executions>
-      		</plugin> -->
+      		</plugin>
 		</plugins>
 	</build>
 
