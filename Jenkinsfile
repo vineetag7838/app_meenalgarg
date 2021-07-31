@@ -31,6 +31,7 @@ pipeline{
         stage('Build'){
             steps{
                 echo 'checkout code'
+                echo 'pulling branch: -'+ env.BRANCH_NAME
                 git poll:true, url: 'https://github.com/mgarg-03-05/app_meenalgarg.git'
 
                 echo 'maven build'
@@ -76,7 +77,7 @@ pipeline{
             steps{
                 echo 'create docker image step'
 
-                echo 'creating image for master branch'
+                //echo 'creating image for master branch'
                 bat "docker build -t i-${username}:${BUILD_NUMBER} --no-cache -f Dockerfile ."
 
                 // echo 'creating image for develop branch'
@@ -137,20 +138,11 @@ pipeline{
         }
 		
 		stage('Docker deployment'){
-            echo 'docker deployment step'
-            when{
-                branch 'master'
-            }
 			steps{
+				echo 'docker deployment step'
 				bat "docker run --name c-${username}-master -d -p 7200:8100 ${username}/i-${username}-master:latest"
-			}
-
-            when{
-                branch 'develop'
-            }
-            steps{
                 bat "docker run --name c-${username}-develop -d -p 7300:8100 ${username}/i-${username}-develop:latest"
-            }
+			}
 		}
 		
         //stage('Local Kubernetes Deployment'){
