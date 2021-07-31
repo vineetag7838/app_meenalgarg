@@ -31,7 +31,7 @@ pipeline{
         stage('Build'){
             steps{
                 echo 'checkout code'
-                echo 'pulling branch: -'+ BRANCH_NAME
+                echo 'pulling branch: - '+ BRANCH_NAME
                 git poll:true, url: 'https://github.com/mgarg-03-05/app_meenalgarg.git'
 
                 echo 'maven build'
@@ -61,7 +61,12 @@ pipeline{
 					bat "${scannerHome}/bin/sonar-scanner \
 					-Dsonar.projectKey=sonar_meenalgarg2610 \
 					-Dsonar.host.url=http://localhost:9000 \
-					-Dsonar.java.binaries=target/classes"
+					-Dsonar.java.binaries=target/classes \
+                    -Dsonar.jacoco.reportPath=target/jacoco-it.exec \
+                    -Dsonar.java.coveragePlugin=jacoco \
+                    -Dsonar.junit.reportsPath=target/surefire-reports \
+                    -Dsonar.surefire.reportsPath=target/surefire-reports \
+                    -Dsonar.language=java"
                 }
                 sleep 10
                 echo 'checking if sonar quality gate passed'
@@ -76,12 +81,7 @@ pipeline{
         stage('Docker image'){
             steps{
                 echo 'create docker image step'
-
-                //echo 'creating image for master branch'
                 bat "docker build -t i-${username}:${BUILD_NUMBER} --no-cache -f Dockerfile ."
-
-                // echo 'creating image for develop branch'
-                // bat "docker build -t i-${username}-develop:${BUILD_NUMBER} --no-cache -f Dockerfile ."
             }
         }
 		
@@ -91,18 +91,11 @@ pipeline{
                     steps{
                         echo 'push image to docker hub step'
                         bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-${env.BRANCH_NAME}:${BUILD_NUMBER}"
-				        bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-${env.BRANCH_NAME}:latest"
-
-                        // bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-develop:${BUILD_NUMBER}"
-				        // bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-develop:latest"
-                
+				        bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-${env.BRANCH_NAME}:latest"                
                         
                         withDockerRegistry(credentialsId: 'DockerHub', url: ''){
                         bat "docker push ${username}/i-${username}-${env.BRANCH_NAME}:${BUILD_NUMBER}"
 				        bat "docker push ${username}/i-${username}-${env.BRANCH_NAME}:latest"
-
-                        // bat "docker push ${username}/i-${username}-develop:${BUILD_NUMBER}"
-				        // bat "docker push ${username}/i-${username}-develop:latest"
                         }
                     }
                 }
@@ -121,16 +114,6 @@ pipeline{
                                 //because when pipeline will run for the first time, 
                                 //there won't be any container to remove
                             }
-
-                            // try{
-                            //     echo 'stopping already running develop container'
-                            //     bat "docker stop c-${username}-develop"
-
-                            //     echo 'removing the old develop container'
-                            //     bat "docker container rm c-${username}-develop"
-                            // }catch(Exception e){
-                            //     //nothing to be done here
-                            // }
                         }
 			        }
                 }
