@@ -31,8 +31,7 @@ pipeline{
         stage('Build'){
             steps{
                 echo 'checkout code'
-                git poll:true, credentialsId: 'github-java' , 
-                url: 'https://github.com/mgarg-03-05/app_meenalgarg.git'
+                git poll:true, url: 'https://github.com/mgarg-03-05/app_meenalgarg.git'
 
                 echo 'maven build'
                 bat 'mvn clean package'
