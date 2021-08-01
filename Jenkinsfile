@@ -159,8 +159,11 @@ pipeline{
                         firewallRuleName = 'develop-node-port'
                     }
                     step([$class: 'KubernetesEngineBuilder', projectId: 'sodium-burner-319611', clusterName: 'demo-cluster', location: 'us-central1', manifestPattern: deploymentFile, credentialsId: 'NAGP_jenkinsPipeline', verifyDeployment: true])
-                    bat "gcloud compute firewall-rules delete ${firewallRuleName} --project sodium-burner-319611"
-                    bat "gcloud compute firewall-rules create ${firewallRuleName} --allow tcp:${kubernetesPort} --project sodium-burner-319611"
+                    try{
+                        bat "gcloud compute firewall-rules create ${firewallRuleName} --allow tcp:${kubernetesPort} --project sodium-burner-319611"
+                    }catch(Exception e){
+                        // nothing to be done here, just catching exception in case firewall rule already exists
+                    }
                 }
 			}
 		}        
