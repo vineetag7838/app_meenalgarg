@@ -5,7 +5,6 @@ pipeline{
     environment{
         scannerHome = tool 'SonarQubeScanner'
         username = 'meenalgarg2610'
-        docker_registry = 'meenalgarg2610/jenkins-multibranch-pipeline'
     }
     tools{
         maven 'Maven3'
@@ -122,23 +121,14 @@ pipeline{
                     def dockerPort
                     if(BRANCH_NAME == 'master'){
                         dockerPort = 7200
-                        //bat "docker run --name c-${username}-master -d -p 7200:8100 ${username}/i-${username}-master:latest"
                     }
                     if(BRANCH_NAME == 'develop'){
                         dockerPort = 7300
-                        //bat "docker run --name c-${username}-develop -d -p 7300:8100 ${username}/i-${username}-develop:latest"
                     }
                     bat "docker run --name c-${username}-${BRANCH_NAME} -d -p ${dockerPort}:8100 ${username}/i-${username}-${BRANCH_NAME}:latest"
                 }
 			}
 		}
-		
-        //stage('Local Kubernetes Deployment'){
-			//steps{
-				//echo 'Deploying on local kubernetes'
-				//bat 'kubectl apply -f deployment.yaml'
-			//}
-		//}
 		
 		stage('Kubernetes Deployment'){
 			steps{
