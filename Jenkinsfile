@@ -60,13 +60,12 @@ pipeline{
                 withSonarQubeEnv('Test_Sonar') {
 					bat "mvn clean package sonar:sonar \
 					-Dsonar.projectKey=sonar_meenalgarg2610 \
+                    -Dsonar.projectName=sonar_meenalgarg2610 \
 					-Dsonar.host.url=http://localhost:9000 \
 					-Dsonar.java.binaries=target/classes \
                     -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml"
                 }
-                sleep 10
                 echo 'checking if sonar quality gate passed'
-                // setup a web hook in sonarqube before executing this step
                 timeout(time: 10, unit: 'MINUTES') {
                 waitForQualityGate abortPipeline: true
                 }
