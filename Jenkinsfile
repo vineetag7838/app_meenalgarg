@@ -129,7 +129,7 @@ pipeline{
                         dockerPort = 7300
                         //bat "docker run --name c-${username}-develop -d -p 7300:8100 ${username}/i-${username}-develop:latest"
                     }
-                    bat "docker run --name c-${username}-develop -d -p ${dockerPort}:8100 ${username}/i-${username}-${BRANCH_NAME}:latest"
+                    bat "docker run --name c-${username}-${BRANCH_NAME} -d -p ${dockerPort}:8100 ${username}/i-${username}-${BRANCH_NAME}:latest"
                 }
 			}
 		}
@@ -155,8 +155,9 @@ pipeline{
                         deploymentFile = deployment-develop.yaml
                         kubernetesPort = 30158
                     }
-                    step([$class: 'KubernetesEngineBuilder', projectId: 'sodium-burner-319611', clusterName: 'demo-cluster', location: 'us-central1', manifestPattern: deploymentFile, credentialsId: 'NAGP_jenkinsPipeline', verifyDeployment: true])
-                    bat "gcloud compute firewall-rules create expose-node-port --allow tcp:${kubernetesPort} --project sodium-burner-319611 --n kubernetes-cluster-meenalgarg"
+                    echo "deploymentFile = ${deploymentFile}"
+                    //step([$class: 'KubernetesEngineBuilder', projectId: 'sodium-burner-319611', clusterName: 'demo-cluster', location: 'us-central1', manifestPattern: deploymentFile, credentialsId: 'NAGP_jenkinsPipeline', verifyDeployment: true])
+                    //bat "gcloud compute firewall-rules create expose-node-port --allow tcp:${kubernetesPort} --project sodium-burner-319611 --n kubernetes-cluster-meenalgarg"
                 }
 			}
 		}        
