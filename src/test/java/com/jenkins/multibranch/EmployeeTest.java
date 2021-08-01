@@ -20,4 +20,10 @@ public class EmployeeTest {
 		int id = 1;
 		assertEquals(id, 1);
 	}
+	
+	@Test
+	public void testDepartment(){
+		String department = "IT";
+		assertEquals(department, "IT");
+	}
 }
