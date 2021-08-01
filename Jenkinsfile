@@ -156,7 +156,7 @@ pipeline{
                         kubernetesPort = 30158
                     }
                     step([$class: 'KubernetesEngineBuilder', projectId: 'sodium-burner-319611', clusterName: 'demo-cluster', location: 'us-central1', manifestPattern: deploymentFile, credentialsId: 'NAGP_jenkinsPipeline', verifyDeployment: true])
-                    bat "gcloud compute firewall-rules create expose-node-port --allow tcp:${kubernetesPort} --project sodium-burner-319611 --n kubernetes-cluster-meenalgarg"
+                    bat "gcloud compute firewall-rules create expose-node-port --allow tcp:${kubernetesPort} --project sodium-burner-319611 -n kubernetes-cluster-meenalgarg"
                 }
 			}
 		}        
