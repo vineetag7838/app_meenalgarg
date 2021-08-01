@@ -147,16 +147,20 @@ pipeline{
                 script{
                     def deploymentFile
                     def kubernetesPort
+                    def firewallRuleName
                     if(BRANCH_NAME == 'master'){
                         deploymentFile = 'deployment-master.yaml'
                         kubernetesPort = 30157
+                        firewallRuleName = 'master-node-port'
                     }
                     if(BRANCH_NAME == 'develop'){
                         deploymentFile = 'deployment-develop.yaml'
                         kubernetesPort = 30158
+                        firewallRuleName = 'develop-node-port'
                     }
                     step([$class: 'KubernetesEngineBuilder', projectId: 'sodium-burner-319611', clusterName: 'demo-cluster', location: 'us-central1', manifestPattern: deploymentFile, credentialsId: 'NAGP_jenkinsPipeline', verifyDeployment: true])
-                    bat "gcloud compute firewall-rules create expose-node-port --allow tcp:${kubernetesPort} --project sodium-burner-319611"
+                    bat "gcloud compute firewall-rules delete ${firewallRuleName} --project sodium-burner-319611"
+                    bat "gcloud compute firewall-rules create ${firewallRuleName} --allow tcp:${kubernetesPort} --project sodium-burner-319611"
                 }
 			}
 		}        
