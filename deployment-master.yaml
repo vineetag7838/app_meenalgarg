@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata: 
-  name: app-deployment 
+  name: app-meenalgarg-master
   namespace: kubernetes-cluster-meenalgarg
   labels: 
     app: app-meenalgarg-master
