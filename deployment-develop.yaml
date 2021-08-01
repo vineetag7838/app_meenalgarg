@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: app-deployment 
+  namespace: kubernetes-cluster-meenalgarg
+  labels: 
+    app: app_meenalgarg
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: app_meenalgarg
+  template:
+    metadata:
+      labels:
+        app: app_meenalgarg
+    spec:
+      containers:
+        - name: app_meenalgarg
+          image: meenalgarg2610/i-meenalgarg2610-develop:latest
+          ports:
+            - name: http
+              containerPort: 8100
+              protocol: TCP
+          # envFrom:
+          #   - configMapRef: 
+          #       name: example-config
+          #   - secretRef:
+          #       name: secret-info
+          resources:
+            requests:
+              memory: "250Mi"
+              cpu: "250m"
+            limits:
+              memory: "500Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: app_meenalgarg
+  namespace: kubernetes-cluster-meenalgarg
+spec:
+  type: NodePort
+  selector:
+    app: app_meenalgarg
+  ports:
+    - protocol: TCP
+      nodePort: 30158
+      port: 8100
+      targetPort: 8100 

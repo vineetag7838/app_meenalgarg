@@ -86,12 +86,12 @@ pipeline{
                 stage('Publish image to Docker hub'){
                     steps{
                         echo 'push image to docker hub step'
-                        bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-${env.BRANCH_NAME}:${BUILD_NUMBER}"
-				        bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-${env.BRANCH_NAME}:latest"                
+                        bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-${BRANCH_NAME}:${BUILD_NUMBER}"
+				        bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-${BRANCH_NAME}:latest"                
                         
                         withDockerRegistry(credentialsId: 'DockerHub', url: ''){
-                        bat "docker push ${username}/i-${username}-${env.BRANCH_NAME}:${BUILD_NUMBER}"
-				        bat "docker push ${username}/i-${username}-${env.BRANCH_NAME}:latest"
+                        bat "docker push ${username}/i-${username}-${BRANCH_NAME}:${BUILD_NUMBER}"
+				        bat "docker push ${username}/i-${username}-${BRANCH_NAME}:latest"
                         }
                     }
                 }
@@ -101,10 +101,10 @@ pipeline{
 				        script{
                             try{
                                 echo 'stopping already running container'
-                                bat "docker stop c-${username}-${env.BRANCH_NAME}"
+                                bat "docker stop c-${username}-${BRANCH_NAME}"
 
                                 echo 'removing the old container'
-                                bat "docker container rm c-${username}-${env.BRANCH_NAME}"
+                                bat "docker container rm c-${username}-${BRANCH_NAME}"
                             }catch(Exception e){
                                 // Nothing to be done here, added only to prevent the failure of pipeline 
                                 //because when pipeline will run for the first time, 
@@ -120,12 +120,16 @@ pipeline{
 			steps{
 				echo 'docker deployment step'
                 script{
-                    if(env.BRANCH_NAME == 'master'){
-                        bat "docker run --name c-${username}-master -d -p 7200:8100 ${username}/i-${username}-master:latest"
+                    def dockerPort
+                    if(BRANCH_NAME == 'master'){
+                        dockerPort = 7200
+                        //bat "docker run --name c-${username}-master -d -p 7200:8100 ${username}/i-${username}-master:latest"
                     }
-                    if(env.BRANCH_NAME == 'develop'){
-                        bat "docker run --name c-${username}-develop -d -p 7300:8100 ${username}/i-${username}-develop:latest"
+                    if(BRANCH_NAME == 'develop'){
+                        dockerPort = 7300
+                        //bat "docker run --name c-${username}-develop -d -p 7300:8100 ${username}/i-${username}-develop:latest"
                     }
+                    bat "docker run --name c-${username}-develop -d -p ${dockerPort}:8100 ${username}/i-${username}-${BRANCH_NAME}:latest"
                 }
 			}
 		}
@@ -137,12 +141,24 @@ pipeline{
 			//}
 		//}
 		
-		// stage('Kubernetes Deployment'){
-		// 	steps{
-		// 		step([$class: 'KubernetesEngineBuilder', projectId: 'sodium-burner-319611', clusterName: 'demo-cluster', location: 'us-central1', manifestPattern: 'deployment-master.yaml', credentialsId: 'NAGP_jenkinsPipeline', verifyDeployment: true])
-
-        //         step([$class: 'KubernetesEngineBuilder', projectId: 'sodium-burner-319611', clusterName: 'demo-cluster', location: 'us-central1', manifestPattern: 'deployment-develop.yaml', credentialsId: 'NAGP_jenkinsPipeline', verifyDeployment: true])
-		// 	}
-		// }        
+		stage('Kubernetes Deployment'){
+			steps{
+                echo 'Kubernetes deployment step'
+                script{
+                    def deploymentFile
+                    def kubernetesPort
+                    if(BRANCH_NAME == 'master'){
+                        deploymentFile = deployment-master.yaml
+                        kubernetesPort = 30157
+                    }
+                    if(BRANCH_NAME == 'develop'){
+                        deploymentFile = deployment-develop.yaml
+                        kubernetesPort = 30158
+                    }
+                    step([$class: 'KubernetesEngineBuilder', projectId: 'sodium-burner-319611', clusterName: 'demo-cluster', location: 'us-central1', manifestPattern: deploymentFile, credentialsId: 'NAGP_jenkinsPipeline', verifyDeployment: true])
+                    gcloud compute firewall-rules create expose-node-port --allow tcp:kubernetesPort --project sodium-burner-319611 --n kubernetes-cluster-meenalgarg
+                }
+			}
+		}        
     }
 }
