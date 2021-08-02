@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: app-meenalgarg-master
-          image: meenalgarg2610/i-meenalgarg2610-master:latest
+          image: "${imageName}"
           ports:
             - name: http
               containerPort: 8100
@@ -46,6 +46,6 @@ spec:
     app: app-meenalgarg-master
   ports:
     - protocol: TCP
-      nodePort: 30157
+      nodePort: "${kubernetesPort}"
       port: 8100
       targetPort: 8100 
