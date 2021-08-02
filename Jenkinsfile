@@ -153,7 +153,7 @@ pipeline{
                         kubernetesPort = 30158
                         firewallRuleName = 'develop-node-port'
                     }
-                    kubernetesPort.toInteger()
+                    kubernetesPort = kubernetesPort.toInteger()
                     step([$class: 'KubernetesEngineBuilder', projectId: 'sodium-burner-319611', clusterName: 'demo-cluster', location: 'us-central1', manifestPattern: deploymentFile, credentialsId: 'NAGP_jenkinsPipeline', verifyDeployment: true])
                     try{
                         bat "gcloud compute firewall-rules create ${firewallRuleName} --allow tcp:${kubernetesPort} --project sodium-burner-319611"
