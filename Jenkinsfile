@@ -36,7 +36,7 @@ pipeline{
             steps{
                 echo 'checkout code'
                 echo 'pulling branch: - '+ BRANCH_NAME
-                git poll:true, url: gitURL
+                git poll:true, credentialsId: 'github-java', url: gitURL
 
                 echo 'maven build'
                 bat 'mvn clean package'
@@ -62,7 +62,7 @@ pipeline{
                 
                 //Test_Sonar - name of configuration in jenkins
                 withSonarQubeEnv('Test_Sonar') {
-					bat "mvn clean package sonar:sonar \
+					bat "${scannerHome}/bin/sonar-scanner \
 					-Dsonar.projectKey=${sonarProjectName} \
                     -Dsonar.projectName=${sonarProjectName} \
 					-Dsonar.host.url=${sonarURL} \
@@ -153,7 +153,7 @@ pipeline{
                         kubernetesPort = 30158
                         firewallRuleName = 'develop-node-port'
                     }
-                    kubernetesPort = kubernetesPort.toInteger()
+                    //kubernetesPort = kubernetesPort.toInteger()
                     step([$class: 'KubernetesEngineBuilder', projectId: 'sodium-burner-319611', clusterName: 'demo-cluster', location: 'us-central1', manifestPattern: deploymentFile, credentialsId: 'NAGP_jenkinsPipeline', verifyDeployment: true])
                     try{
                         bat "gcloud compute firewall-rules create ${firewallRuleName} --allow tcp:${kubernetesPort} --project sodium-burner-319611"
