@@ -90,8 +90,7 @@ pipeline{
                     steps{
                         echo 'push image to docker hub step'
                         bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-${BRANCH_NAME}:${BUILD_NUMBER}"
-				        bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-${BRANCH_NAME}:latest"     
-                        imageName = "${username}/i-${username}-${BRANCH_NAME}:latest"            
+				        bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-${BRANCH_NAME}:latest"                 
                         
                         withDockerRegistry(credentialsId: 'DockerHub', url: ''){
                         bat "docker push ${username}/i-${username}-${BRANCH_NAME}:${BUILD_NUMBER}"
@@ -124,6 +123,7 @@ pipeline{
 			steps{
 				echo 'docker deployment step'
                 script{
+                    imageName = "${username}/i-${username}-${BRANCH_NAME}:latest"
                     def dockerPort
                     if(BRANCH_NAME == 'master'){
                         dockerPort = 7200
