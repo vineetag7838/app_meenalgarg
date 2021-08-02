@@ -46,6 +46,6 @@ spec:
     app: app-meenalgarg-master
   ports:
     - protocol: TCP
-      nodePort: ${kubernetesPort}.toInteger()
+      nodePort: ${kubernetesPort}
       port: 8100
       targetPort: 8100 
