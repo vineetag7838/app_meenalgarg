@@ -5,6 +5,11 @@ pipeline{
     environment{
         scannerHome = tool 'SonarQubeScanner'
         username = 'meenalgarg2610'
+        gitURL = 'https://github.com/mgarg-03-05/app_meenalgarg.git'
+        sonarProjectName = 'sonar_meenalgarg2610'
+        sonarURL = 'http://localhost:9000'
+        kubernetesPort = 0
+        imageName = ''
     }
     tools{
         maven 'Maven3'
@@ -31,7 +36,7 @@ pipeline{
             steps{
                 echo 'checkout code'
                 echo 'pulling branch: - '+ BRANCH_NAME
-                git poll:true, url: 'https://github.com/mgarg-03-05/app_meenalgarg.git'
+                git poll:true, url: gitURL
 
                 echo 'maven build'
                 bat 'mvn clean package'
@@ -58,9 +63,9 @@ pipeline{
                 //Test_Sonar - name of configuration in jenkins
                 withSonarQubeEnv('Test_Sonar') {
 					bat "mvn clean package sonar:sonar \
-					-Dsonar.projectKey=sonar_meenalgarg2610 \
-                    -Dsonar.projectName=sonar_meenalgarg2610 \
-					-Dsonar.host.url=http://localhost:9000 \
+					-Dsonar.projectKey=${sonarProjectName} \
+                    -Dsonar.projectName=${sonarProjectName} \
+					-Dsonar.host.url=${sonarURL} \
 					-Dsonar.java.binaries=target/classes \
                     -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml"
                 }
@@ -85,7 +90,8 @@ pipeline{
                     steps{
                         echo 'push image to docker hub step'
                         bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-${BRANCH_NAME}:${BUILD_NUMBER}"
-				        bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-${BRANCH_NAME}:latest"                
+				        bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-${BRANCH_NAME}:latest"     
+                        imageName = "${username}/i-${username}-${BRANCH_NAME}:latest"            
                         
                         withDockerRegistry(credentialsId: 'DockerHub', url: ''){
                         bat "docker push ${username}/i-${username}-${BRANCH_NAME}:${BUILD_NUMBER}"
@@ -134,16 +140,16 @@ pipeline{
 			steps{
                 echo 'Kubernetes deployment step'
                 script{
-                    def deploymentFile
-                    def kubernetesPort
+                    def deploymentFile = 'deployment-master.yaml'
+                    //def kubernetesPort
                     def firewallRuleName
                     if(BRANCH_NAME == 'master'){
-                        deploymentFile = 'deployment-master.yaml'
+                        //deploymentFile = 'deployment-master.yaml'
                         kubernetesPort = 30157
                         firewallRuleName = 'master-node-port'
                     }
                     if(BRANCH_NAME == 'develop'){
-                        deploymentFile = 'deployment-develop.yaml'
+                        //deploymentFile = 'deployment-develop.yaml'
                         kubernetesPort = 30158
                         firewallRuleName = 'develop-node-port'
                     }
