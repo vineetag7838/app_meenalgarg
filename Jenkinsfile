@@ -34,7 +34,7 @@ pipeline{
             steps{
                 echo 'checkout code'
                 echo 'pulling branch: - '+ BRANCH_NAME
-                git poll:true, credentialsId: 'github-java', url: gitURL
+                git poll:true, url: gitURL
 
                 echo 'maven build'
                 bat 'mvn clean package'
@@ -60,7 +60,7 @@ pipeline{
                 
                 //Test_Sonar - name of configuration in jenkins
                 withSonarQubeEnv('Test_Sonar') {
-					bat "${scannerHome}/bin/sonar-scanner \
+					bat "mvn clean package sonar:sonar \
 					-Dsonar.projectKey=${sonarProjectName} \
                     -Dsonar.projectName=${sonarProjectName} \
 					-Dsonar.host.url=${sonarURL} \
