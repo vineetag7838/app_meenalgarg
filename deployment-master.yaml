@@ -17,16 +17,11 @@ spec:
     spec:
       containers:
         - name: app-meenalgarg-master
-          image: "${imageName}"
+          image: meenalgarg2610/i-meenalgarg2610-master:latest
           ports:
             - name: http
               containerPort: 8100
               protocol: TCP
-          # envFrom:
-          #   - configMapRef: 
-          #       name: example-config
-          #   - secretRef:
-          #       name: secret-info
           resources:
             requests:
               memory: "250Mi"
@@ -46,6 +41,6 @@ spec:
     app: app-meenalgarg-master
   ports:
     - protocol: TCP
-      nodePort: ${kubernetesPort}.toInteger()
+      nodePort: 30157
       port: 8100
       targetPort: 8100 
