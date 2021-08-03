@@ -8,8 +8,6 @@ pipeline{
         gitURL = 'https://github.com/mgarg-03-05/app_meenalgarg.git'
         sonarProjectName = 'sonar_meenalgarg2610'
         sonarURL = 'http://localhost:9000'
-        kubernetesPort = 0
-        imageName = ''
     }
     tools{
         maven 'Maven3'
@@ -92,10 +90,10 @@ pipeline{
                         bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-${BRANCH_NAME}:${BUILD_NUMBER}"
 				        bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-${BRANCH_NAME}:latest"                 
                         
-                        withDockerRegistry(credentialsId: 'DockerHub', url: ''){
-                        bat "docker push ${username}/i-${username}-${BRANCH_NAME}:${BUILD_NUMBER}"
-				        bat "docker push ${username}/i-${username}-${BRANCH_NAME}:latest"
-                        }
+                        // withDockerRegistry(credentialsId: 'DockerHub', url: ''){
+                        // bat "docker push ${username}/i-${username}-${BRANCH_NAME}:${BUILD_NUMBER}"
+				        // bat "docker push ${username}/i-${username}-${BRANCH_NAME}:latest"
+                        // }
                     }
                 }
                 stage('Pre-container check'){
@@ -123,7 +121,6 @@ pipeline{
 			steps{
 				echo 'docker deployment step'
                 script{
-                    imageName = "${username}/i-${username}-${BRANCH_NAME}:latest"
                     def dockerPort
                     if(BRANCH_NAME == 'master'){
                         dockerPort = 7200
@@ -140,20 +137,19 @@ pipeline{
 			steps{
                 echo 'Kubernetes deployment step'
                 script{
-                    def deploymentFile = 'deployment-master.yaml'
-                    //def kubernetesPort
+                    def deploymentFile
+                    def kubernetesPort
                     def firewallRuleName
                     if(BRANCH_NAME == 'master'){
-                        //deploymentFile = 'deployment-master.yaml'
+                        deploymentFile = 'deployment-master.yaml'
                         kubernetesPort = 30157
                         firewallRuleName = 'master-node-port'
                     }
                     if(BRANCH_NAME == 'develop'){
-                        //deploymentFile = 'deployment-develop.yaml'
+                        deploymentFile = 'deployment-develop.yaml'
                         kubernetesPort = 30158
                         firewallRuleName = 'develop-node-port'
                     }
-                    //kubernetesPort = kubernetesPort.toInteger()
                     step([$class: 'KubernetesEngineBuilder', projectId: 'sodium-burner-319611', clusterName: 'demo-cluster', location: 'us-central1', manifestPattern: deploymentFile, credentialsId: 'NAGP_jenkinsPipeline', verifyDeployment: true])
                     try{
                         bat "gcloud compute firewall-rules create ${firewallRuleName} --allow tcp:${kubernetesPort} --project sodium-burner-319611"
