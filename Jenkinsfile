@@ -67,10 +67,10 @@ pipeline{
 					-Dsonar.java.binaries=target/classes \
                     -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml"
                 }
-                // echo 'checking if sonar quality gate passed'
-                // timeout(time: 10, unit: 'MINUTES') {
-                // waitForQualityGate abortPipeline: true
-                // }
+                echo 'checking if sonar quality gate passed'
+                timeout(time: 10, unit: 'MINUTES') {
+                waitForQualityGate abortPipeline: true
+                }
 
             }
         }
@@ -111,6 +111,7 @@ pipeline{
                                 //because when pipeline will run for the first time, 
                                 //there won't be any container to remove
                             }
+                            bat "docker stop c-${username}-${BRANCH_NAME}"
                         }
 			        }
                 }
