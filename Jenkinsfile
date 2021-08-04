@@ -6,7 +6,7 @@ pipeline{
         scannerHome = tool 'SonarQubeScanner'
         username = 'meenalgarg2610'
         gitURL = 'https://github.com/mgarg-03-05/app_meenalgarg.git'
-        sonarProjectName = 'sonar_meenalgarg2610'
+        sonarProjectName = 'sonar_meenalgarg'
         sonarURL = 'http://localhost:9000'
     }
     tools{

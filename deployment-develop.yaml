@@ -22,18 +22,13 @@ spec:
             - name: http
               containerPort: 8100
               protocol: TCP
-          # envFrom:
-          #   - configMapRef: 
-          #       name: example-config
-          #   - secretRef:
-          #       name: secret-info
           resources:
             requests:
               memory: "250Mi"
               cpu: "250m"
-            # limits:
-            #   memory: "500Mi"
-            #   cpu: "500m"
+            limits:
+              memory: "1000Mi"
+              cpu: "1000m"
 ---
 apiVersion: v1
 kind: Service
