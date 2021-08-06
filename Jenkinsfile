@@ -25,7 +25,7 @@ pipeline{
             numToKeepStr: '3',
             daysToKeepStr: '30'
             ))
-        parallelsAlwaysFailFast()
+        //parallelsAlwaysFailFast()
     }
     
     stages{
@@ -83,6 +83,7 @@ pipeline{
         }
 		
         stage('Containers'){
+            failFast true
             parallel{
                 stage('Publish image to Docker hub'){
                     steps{
