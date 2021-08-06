@@ -25,7 +25,7 @@ pipeline{
             numToKeepStr: '3',
             daysToKeepStr: '30'
             ))
-        //parallelsAlwaysFailFast()
+        parallelsAlwaysFailFast()
     }
     
     stages{
@@ -83,7 +83,6 @@ pipeline{
         }
 		
         stage('Containers'){
-            failFast true
             parallel{
                 stage('Publish image to Docker hub'){
                     steps{
@@ -112,7 +111,6 @@ pipeline{
                                 //because when pipeline will run for the first time, 
                                 //there won't be any container to remove
                             }
-                            bat "docker stop c-${username}-${BRANCH_NAME}"
                         }
 			        }
                 }
