@@ -143,12 +143,12 @@ pipeline{
                     if(BRANCH_NAME == 'master'){
                         deploymentFile = 'deployment-master.yaml'
                         kubernetesPort = 30157
-                        firewallRuleName = 'master-node-port'
+                        firewallRuleName = 'app-meenalgarg-master-node-port'
                     }
                     if(BRANCH_NAME == 'develop'){
                         deploymentFile = 'deployment-develop.yaml'
                         kubernetesPort = 30158
-                        firewallRuleName = 'develop-node-port'
+                        firewallRuleName = 'app-meenalgarg-develop-node-port'
                     }
                     bat "kubectl apply -f ${deploymentFile}"
                     try{
