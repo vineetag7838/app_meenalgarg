@@ -90,10 +90,10 @@ pipeline{
                         bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-${BRANCH_NAME}:${BUILD_NUMBER}"
 				        bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-${BRANCH_NAME}:latest"                 
                         
-                        // withDockerRegistry(credentialsId: 'DockerHub', url: ''){
-                        // bat "docker push ${username}/i-${username}-${BRANCH_NAME}:${BUILD_NUMBER}"
-				        // bat "docker push ${username}/i-${username}-${BRANCH_NAME}:latest"
-                        // }
+                        withDockerRegistry(credentialsId: 'DockerHub', url: ''){
+                        bat "docker push ${username}/i-${username}-${BRANCH_NAME}:${BUILD_NUMBER}"
+				        bat "docker push ${username}/i-${username}-${BRANCH_NAME}:latest"
+                        }
                     }
                 }
                 stage('Pre-container check'){
