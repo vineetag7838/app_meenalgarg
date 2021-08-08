@@ -3,6 +3,7 @@ pipeline{
     agent any
     
     environment{
+        scannerHome = tool 'SonarQubeScanner'
         dockerUserName = 'meenalgarg2610'
         gitURL = 'https://github.com/mgarg-03-05/app_meenalgarg.git'
         sonarProjectName = 'sonar_meenalgarg'
@@ -59,7 +60,7 @@ pipeline{
                 
                 //Test_Sonar - name of configuration in jenkins
                 withSonarQubeEnv('Test_Sonar') {
-					bat "mvn clean package sonar:sonar \
+					bat "${scannerHome}/bin/sonar-scanner \
 					-Dsonar.projectKey=${sonarProjectName} \
                     -Dsonar.projectName=${sonarProjectName} \
 					-Dsonar.host.url=${sonarURL} \
