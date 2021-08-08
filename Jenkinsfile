@@ -3,7 +3,6 @@ pipeline{
     agent any
     
     environment{
-        scannerHome = tool 'SonarQubeScanner'
         dockerUserName = 'meenalgarg2610'
         gitURL = 'https://github.com/mgarg-03-05/app_meenalgarg.git'
         sonarProjectName = 'sonar_meenalgarg'
@@ -60,11 +59,11 @@ pipeline{
                 
                 //Test_Sonar - name of configuration in jenkins
                 withSonarQubeEnv('Test_Sonar') {
-					bat "${scannerHome}/bin/sonar-scanner \
+					bat "mvn clean package sonar:sonar \
 					-Dsonar.projectKey=${sonarProjectName} \
                     -Dsonar.projectName=${sonarProjectName} \
 					-Dsonar.host.url=${sonarURL} \
-					-Dsonar.java.binaries=src/main/java \
+					-Dsonar.java.binaries=target/classes \
                     -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml"
                 }
                 echo 'checking if sonar quality gate passed'
