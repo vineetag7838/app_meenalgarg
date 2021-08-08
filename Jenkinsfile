@@ -3,8 +3,7 @@ pipeline{
     agent any
     
     environment{
-        scannerHome = tool 'SonarQubeScanner'
-        username = 'meenalgarg2610'
+        dockerUserName = 'meenalgarg2610'
         gitURL = 'https://github.com/mgarg-03-05/app_meenalgarg.git'
         sonarProjectName = 'sonar_meenalgarg'
         sonarURL = 'http://localhost:9000'
@@ -78,7 +77,7 @@ pipeline{
         stage('Docker image'){
             steps{
                 echo 'create docker image step'
-                bat "docker build -t i-${username}:${BUILD_NUMBER} --no-cache -f Dockerfile ."
+                bat "docker build -t i-${dockerUserName}:${BUILD_NUMBER} --no-cache -f Dockerfile ."
             }
         }
 		
@@ -87,12 +86,12 @@ pipeline{
                 stage('Publish image to Docker hub'){
                     steps{
                         echo 'push image to docker hub step'
-                        bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-${BRANCH_NAME}:${BUILD_NUMBER}"
-				        bat "docker tag i-${username}:${BUILD_NUMBER} ${username}/i-${username}-${BRANCH_NAME}:latest"                 
+                        bat "docker tag i-${dockerUserName}:${BUILD_NUMBER} ${dockerUserName}/i-${dockerUserName}-${BRANCH_NAME}:${BUILD_NUMBER}"
+				        bat "docker tag i-${dockerUserName}:${BUILD_NUMBER} ${dockerUserName}/i-${dockerUserName}-${BRANCH_NAME}:latest"                 
                         
                         withDockerRegistry(credentialsId: 'DockerHub', url: ''){
-                        bat "docker push ${username}/i-${username}-${BRANCH_NAME}:${BUILD_NUMBER}"
-				        bat "docker push ${username}/i-${username}-${BRANCH_NAME}:latest"
+                        bat "docker push ${dockerUserName}/i-${dockerUserName}-${BRANCH_NAME}:${BUILD_NUMBER}"
+				        bat "docker push ${dockerUserName}/i-${dockerUserName}-${BRANCH_NAME}:latest"
                         }
                     }
                 }
@@ -102,10 +101,10 @@ pipeline{
 				        script{
                             try{
                                 echo 'stopping already running container'
-                                bat "docker stop c-${username}-${BRANCH_NAME}"
+                                bat "docker stop c-${dockerUserName}-${BRANCH_NAME}"
 
                                 echo 'removing the old container'
-                                bat "docker container rm c-${username}-${BRANCH_NAME}"
+                                bat "docker container rm c-${dockerUserName}-${BRANCH_NAME}"
                             }catch(Exception e){
                                 // Nothing to be done here, added only to prevent the failure of pipeline 
                                 //because when pipeline will run for the first time, 
@@ -128,7 +127,7 @@ pipeline{
                     if(BRANCH_NAME == 'develop'){
                         dockerPort = 7300
                     }
-                    bat "docker run --name c-${username}-${BRANCH_NAME} -d -p ${dockerPort}:8100 ${username}/i-${username}-${BRANCH_NAME}:latest"
+                    bat "docker run --name c-${dockerUserName}-${BRANCH_NAME} -d -p ${dockerPort}:8100 ${dockerUserName}/i-${dockerUserName}-${BRANCH_NAME}:latest"
                 }
 			}
 		}
