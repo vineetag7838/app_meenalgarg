@@ -64,7 +64,7 @@ pipeline{
 					-Dsonar.projectKey=${sonarProjectName} \
                     -Dsonar.projectName=${sonarProjectName} \
 					-Dsonar.host.url=${sonarURL} \
-					-Dsonar.java.binaries=target/classes \
+					-Dsonar.java.binaries=src/main/java \
                     -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml"
                 }
                 echo 'checking if sonar quality gate passed'
