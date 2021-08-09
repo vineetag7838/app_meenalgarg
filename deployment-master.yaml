@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata: 
-  name: app-meenalgarg-master
+  name: app-meenalgarg-{{BRANCHNAME}}
   namespace: kubernetes-cluster-meenalgarg
   labels: 
-    app: app-meenalgarg-master
+    app: app-meenalgarg-{{BRANCHNAME}}
 spec:
   replicas: 4
   selector:
     matchLabels:
-      app: app-meenalgarg-master
+      app: app-meenalgarg-{{BRANCHNAME}}
   template:
     metadata:
       labels:
-        app: app-meenalgarg-master
+        app: app-meenalgarg-{{BRANCHNAME}}
     spec:
       containers:
-        - name: app-meenalgarg-master
-          image: meenalgarg2610/i-meenalgarg2610-master:latest
+        - name: app-meenalgarg-{{BRANCHNAME}}
+          image: meenalgarg2610/i-meenalgarg2610-{{BRANCHNAME}}:latest
           ports:
             - name: http
               containerPort: 8100
@@ -33,14 +33,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: app-meenalgarg-master
+  name: app-meenalgarg-{{BRANCHNAME}}
   namespace: kubernetes-cluster-meenalgarg
 spec:
   type: NodePort
   selector:
-    app: app-meenalgarg-master
+    app: app-meenalgarg-{{BRANCHNAME}}
   ports:
     - protocol: TCP
-      nodePort: 30157
+      nodePort: {{NODEPORT}}
       port: 8100
       targetPort: 8100 
