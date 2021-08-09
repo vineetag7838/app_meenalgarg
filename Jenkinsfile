@@ -139,21 +139,18 @@ pipeline{
 			steps{
                 echo 'Kubernetes deployment step'
                 script{
-                    def deploymentFile
                     def kubernetesPort
                     def firewallRuleName
                     if(BRANCH_NAME == 'master'){
-                        deploymentFile = 'deployment-master.yaml'
                         kubernetesPort = 30157
                         firewallRuleName = 'app-meenalgarg-master-node-port'
                     }
                     if(BRANCH_NAME == 'develop'){
-                        deploymentFile = 'deployment-develop.yaml'
                         kubernetesPort = 30158
                         firewallRuleName = 'app-meenalgarg-develop-node-port'
                     }
                     powershell "(Get-Content ${WORKSPACE}\\deployment-master.yaml).Replace('{{BRANCHNAME}}', '${BRANCH_NAME}').Replace('{{BUILDNUMBER}}', '${BUILD_NUMBER}').Replace('{{NODEPORT}}', '${kubernetesPort}') | Out-File ${WORKSPACE}\\deployment-master.yaml"
-                    bat "kubectl apply -f deployment-master.yaml"
+                    bat "kubectl apply -f deployment.yaml"
                     try{
                         bat "gcloud compute firewall-rules create ${firewallRuleName} --allow tcp:${kubernetesPort} --project sodium-burner-319611"
                     }catch(Exception e){
