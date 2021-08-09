@@ -94,7 +94,7 @@ pipeline{
                         
                         withDockerRegistry(credentialsId: 'DockerHub', url: ''){
                         bat "docker push ${dockerUserName}/i-${dockerUserName}-${BRANCH_NAME}:${BUILD_NUMBER}"
-				        bat "docker push ${dockerUserName}/i-${dockerUserName}-${BRANCH_NAME}:latest"
+				        //bat "docker push ${dockerUserName}/i-${dockerUserName}-${BRANCH_NAME}:latest"
                         }
                     }
                 }
@@ -152,7 +152,7 @@ pipeline{
                         kubernetesPort = 30158
                         firewallRuleName = 'app-meenalgarg-develop-node-port'
                     }
-                    powershell "(Get-Content ${WORKSPACE}\\deployment-master.yaml).Replace('{{BRANCHNAME}}', '${BRANCH_NAME}').Replace('{{NODEPORT}}', '${kubernetesPort}') | Out-File ${WORKSPACE}\\deployment-master.yaml"
+                    powershell "(Get-Content ${WORKSPACE}\\deployment-master.yaml).Replace('{{BRANCHNAME}}', '${BRANCH_NAME}').Replace('{{BUILDNUMBER}}', '${BUILD_NUMBER}').Replace('{{NODEPORT}}', '${kubernetesPort}') | Out-File ${WORKSPACE}\\deployment-master.yaml"
                     bat "kubectl apply -f deployment-master.yaml"
                     try{
                         bat "gcloud compute firewall-rules create ${firewallRuleName} --allow tcp:${kubernetesPort} --project sodium-burner-319611"
