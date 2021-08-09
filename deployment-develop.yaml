@@ -1,3 +1,12 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: kubernetes-cluster-meenalgarg
+  labels:
+    name: kubernetes-cluster-meenalgarg
+
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata: 
@@ -22,13 +31,6 @@ spec:
             - name: http
               containerPort: 8100
               protocol: TCP
-          resources:
-            requests:
-              memory: "250Mi"
-              cpu: "250m"
-            limits:
-              memory: "1000Mi"
-              cpu: "1000m"
 ---
 apiVersion: v1
 kind: Service
