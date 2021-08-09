@@ -152,7 +152,9 @@ pipeline{
                         kubernetesPort = 30158
                         firewallRuleName = 'app-meenalgarg-develop-node-port'
                     }
-                    bat "kubectl apply -f ${deploymentFile}"
+                    powershell "(Get-Content ${WORKSPACE}\\deployment-master.yaml)
+                    .Replace('{{BRANCHNAME}}', '${BRANCH_NAME}').Replace('{{NODEPORT}}', '${kubernetesPort}') | Out-File ${WORKSPACE}\\deployment-master.yaml"
+                    bat "kubectl apply -f deployment-master.yaml"
                     try{
                         bat "gcloud compute firewall-rules create ${firewallRuleName} --allow tcp:${kubernetesPort} --project sodium-burner-319611"
                     }catch(Exception e){
