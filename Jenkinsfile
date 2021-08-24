@@ -60,19 +60,7 @@ pipeline{
                 
                 //Test_Sonar - name of configuration in jenkins
                 withSonarQubeEnv('Test_Sonar') {
-					bat "${scannerHome}/bin/sonar-scanner \
-					-Dsonar.projectKey=${sonarProjectName} \
-                    -Dsonar.projectName=${sonarProjectName} \
-					-Dsonar.host.url=${sonarURL} \
-					-Dsonar.java.binaries=target/classes \
-                    -Dsonar.tests=src/test/java \
-                    -Dsonar.sources=src/main/java \
-                    -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml"
-                }
-                echo 'checking if sonar quality gate passed'
-                timeout(time: 10, unit: 'MINUTES') {
-                waitForQualityGate abortPipeline: true
-                }
+			bat "mvn sonar:sonar -Dhttps.protocols=TLSv1.2" }
 
             }
         }
