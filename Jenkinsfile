@@ -5,7 +5,7 @@ pipeline{
     environment{
         scannerHome = tool 'SonarQubeScanner'
         dockerUserName = 'meenalgarg2610'
-        gitURL = 'https://github.com/mgarg-03-05/app_meenalgarg.git'
+        gitURL = 'https://github.com/vineetag7838/app_meenalgarg.git'
         sonarProjectName = 'sonar_meenalgarg'
         sonarURL = 'http://localhost:9000'
     }
@@ -56,23 +56,25 @@ pipeline{
                 branch 'develop'
             }
             steps{
-                echo 'sonarQube code analysis step'
+//                 echo 'sonarQube code analysis step'
                 
-                //Test_Sonar - name of configuration in jenkins
-                withSonarQubeEnv('Test_Sonar') {
-					bat "${scannerHome}/bin/sonar-scanner \
-					-Dsonar.projectKey=${sonarProjectName} \
-                    -Dsonar.projectName=${sonarProjectName} \
-					-Dsonar.host.url=${sonarURL} \
-					-Dsonar.java.binaries=target/classes \
-                    -Dsonar.tests=src/test/java \
-                    -Dsonar.sources=src/main/java \
-                    -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml"
-                }
-                echo 'checking if sonar quality gate passed'
-                timeout(time: 10, unit: 'MINUTES') {
-                waitForQualityGate abortPipeline: true
-                }
+//                 //Test_Sonar - name of configuration in jenkins
+                 withSonarQubeEnv('Test_Sonar') {
+		     bat "mvn sonar:sonar -Dhttps.protocols=TLSv1.2"
+// 					bat "${scannerHome}/bin/sonar-scanner \
+// 					-Dsonar.projectKey=${sonarProjectName} \
+//                     -Dsonar.projectName=${sonarProjectName} \
+// 					-Dsonar.host.url=${sonarURL} \
+// 					-Dsonar.java.binaries=target/classes \
+//                     -Dsonar.tests=src/test/java \
+//                     -Dsonar.sources=src/main/java \
+//                     -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml"
+                 }
+                 echo 'checking if sonar quality gate passed'
+                 timeout(time: 10, unit: 'MINUTES') {
+                 waitForQualityGate abortPipeline: true
+                 }
+		    
             }
         }
 		
