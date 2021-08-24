@@ -5,7 +5,7 @@ pipeline{
     environment{
         scannerHome = tool 'SonarQubeScanner'
         dockerUserName = 'meenalgarg2610'
-        gitURL = 'https://github.com/mgarg-03-05/app_meenalgarg.git'
+        gitURL = 'https://github.com/vineetag7838/app_meenalgarg.git'
         sonarProjectName = 'sonar_meenalgarg'
         sonarURL = 'http://localhost:9000'
     }
